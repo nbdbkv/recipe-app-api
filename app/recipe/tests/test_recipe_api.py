@@ -237,7 +237,7 @@ class PrivateRecipeAPITests(TestCase):
 
         payload = {'tags': []}
         url = detail_url(recipe.id)
-        res = self.client.delete(url, payload, format='json')
+        res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.tags.count(), 0)
