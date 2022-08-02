@@ -44,15 +44,19 @@ class RecipeSerializer(serializers.ModelSerializer):
             recipe.tags.add(tag_obj)
 
     def create(self, validated_data):
-        tags = validated_data.pop('tags', [])
         ingredients = validated_data.pop('ingredients', [])
+        tags = validated_data.pop('tags', [])
         recipe = Recipe.objects.create(**validated_data)
         self._get_or_create_ingredients(ingredients, recipe)
         self._get_or_create_tags(tags, recipe)
         return recipe
 
     def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags', None)
+        if ingredients is not None:
+            instance.ingredients.clear()
+            self._get_or_create_ingredients(ingredients, instance)
         if tags is not None:
             instance.tags.clear()
             self._get_or_create_tags(tags, instance)
